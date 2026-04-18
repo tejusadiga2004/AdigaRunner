@@ -220,5 +220,42 @@ enum ConfigError: LocalizedError {
         Self.usageText
     }
 
-    private static let usageText = "Usage:\n  adiga list-models [--models-dir <path>]\n  adiga list-available-models [--models-dir <path>]\n  adiga download-model <model-name> [--models-dir <path>]\n  adiga serve <model-name|model-path> [--host 127.0.0.1] [--port 8080] [--max-tokens 256] [--temperature 0.7] [--models-dir <path>]\n  adiga <model-name|model-path> [--host 127.0.0.1] [--port 8080] [--max-tokens 256] [--temperature 0.7] [--models-dir <path>]"
+    private static let usageText = """
+        AdigaRunner - Local LLM Server via MLX
+
+        USAGE:
+          adiga <command> [options]
+
+        COMMANDS:
+          list-models                List all supported models
+          list-available-models      List downloaded supported models
+          download-model <name>      Download a supported model
+          serve <model>              Start server with a model (default command)
+
+        OPTIONS:
+          --models-dir <path>        Custom models directory (default: ~/.adigarunner/models)
+          --host <addr>              Server host (default: 127.0.0.1)
+          --port <port>              Server port (default: 8080)
+          --max-tokens <n>           Max tokens per request (default: 256, max: 8192)
+          --temperature <n>          Temperature for sampling (default: 0.7, range: 0.0-2.0)
+          -h, --help                 Show this help message
+
+        EXAMPLES:
+          List supported models:
+            adiga list-models
+
+          List downloaded models:
+            adiga list-available-models
+
+          Download a model:
+            adiga download-model llama-3.2-1b
+
+          Start server with a model:
+            adiga serve llama-3.2-1b
+            adiga llama-3.2-1b --port 9000 --temperature 0.5
+
+          Use custom models directory:
+            adiga download-model llama-3.2-1b --models-dir ./models
+            adiga serve llama-3.2-1b --models-dir ./models
+        """
 }
