@@ -6,6 +6,7 @@ import Foundation
 enum CLICommand {
     case serve(AppConfig)
     case listModels(modelsDirectory: URL)
+    case listDownloadedModels(modelsDirectory: URL)
     case downloadModel(DownloadConfig)
 }
 
@@ -31,6 +32,9 @@ struct AppConfig {
         case "list-models":
             let modelsDirectory = try parseModelsDirectory(from: Array(args.dropFirst(2)))
             return .listModels(modelsDirectory: modelsDirectory)
+        case "list-available-models":
+            let modelsDirectory = try parseModelsDirectory(from: Array(args.dropFirst(2)))
+            return .listDownloadedModels(modelsDirectory: modelsDirectory)
         case "download-model":
             return .downloadModel(try DownloadConfig.parse(from: args))
         case "serve":
@@ -216,5 +220,5 @@ enum ConfigError: LocalizedError {
         Self.usageText
     }
 
-    private static let usageText = "Usage:\n  adiga list-models [--models-dir <path>]\n  adiga download-model <model-name> [--models-dir <path>]\n  adiga serve <model-name|model-path> [--host 127.0.0.1] [--port 8080] [--max-tokens 256] [--temperature 0.7] [--models-dir <path>]\n  adiga <model-name|model-path> [--host 127.0.0.1] [--port 8080] [--max-tokens 256] [--temperature 0.7] [--models-dir <path>]"
+    private static let usageText = "Usage:\n  adiga list-models [--models-dir <path>]\n  adiga list-available-models [--models-dir <path>]\n  adiga download-model <model-name> [--models-dir <path>]\n  adiga serve <model-name|model-path> [--host 127.0.0.1] [--port 8080] [--max-tokens 256] [--temperature 0.7] [--models-dir <path>]\n  adiga <model-name|model-path> [--host 127.0.0.1] [--port 8080] [--max-tokens 256] [--temperature 0.7] [--models-dir <path>]"
 }

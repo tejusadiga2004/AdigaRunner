@@ -60,6 +60,12 @@ List the hard-coded supported models:
 swift run adiga list-models
 ```
 
+List only the supported models that are already downloaded locally:
+
+```bash
+swift run adiga list-available-models
+```
+
 Download one of the supported models to the default local storage directory:
 
 ```bash
@@ -72,6 +78,7 @@ If a download is interrupted, partially downloaded files are kept as resumable `
 Use a custom local model storage directory:
 
 ```bash
+swift run adiga list-available-models --models-dir ./models
 swift run adiga download-model llama-3.2-1b --models-dir ./models
 swift run adiga serve llama-3.2-1b --models-dir ./models
 ```

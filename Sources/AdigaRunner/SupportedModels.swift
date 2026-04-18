@@ -50,6 +50,23 @@ enum SupportedModelCatalog {
 
         return (["Supported models:"] + lines).joined(separator: "\n")
     }
+
+    static func formattedDownloadedList(from baseDirectory: URL) -> String {
+        let downloadedModels = all.filter { model in
+            ModelStorage.isDownloaded(model: model, baseDirectory: baseDirectory)
+        }
+
+        guard !downloadedModels.isEmpty else {
+            return "No downloaded supported models found in \(baseDirectory.path)"
+        }
+
+        let lines = downloadedModels.map { model in
+            let localPath = ModelStorage.localPath(for: model, baseDirectory: baseDirectory).path
+            return "- \(model.name): \(model.description)\n  repo: \(model.repoID)\n  local path: \(localPath)"
+        }
+
+        return (["Downloaded models:"] + lines).joined(separator: "\n")
+    }
 }
 
 enum ModelStorage {
@@ -61,5 +78,11 @@ enum ModelStorage {
 
     static func localPath(for model: SupportedModel, baseDirectory: URL) -> URL {
         baseDirectory.appendingPathComponent(model.localDirectoryName, isDirectory: true)
+    }
+
+    static func isDownloaded(model: SupportedModel, baseDirectory: URL) -> Bool {
+        var isDirectory: ObjCBool = false
+        let path = localPath(for: model, baseDirectory: baseDirectory).path
+        return FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) && isDirectory.boolValue
     }
 }

@@ -13,6 +13,8 @@ struct AdigaRunner {
             switch command {
             case .listModels(let modelsDirectory):
                 print(SupportedModelCatalog.formattedList(defaultBaseDirectory: modelsDirectory))
+            case .listDownloadedModels(let modelsDirectory):
+                print(SupportedModelCatalog.formattedDownloadedList(from: modelsDirectory))
             case .downloadModel(let downloadConfig):
                 let downloader = ModelDownloader()
                 let localPath = try await downloader.download(downloadConfig)
