@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AdigaRunner}",
+            "name": "Debug adiga",
+            "target": "adiga",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug adiga"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AdigaRunner}",
+            "name": "Release adiga",
+            "target": "adiga",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release adiga"
+        }
+    ]
+}
