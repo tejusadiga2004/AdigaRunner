@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "AdigaRunner",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v15)
     ],
     products: [
         .executable(name: "adiga", targets: ["AdigaRunner"])
