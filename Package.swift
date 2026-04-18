@@ -1,5 +1,8 @@
 // swift-tools-version: 6.1
 
+// Author: Tejus Adiga M <entropypagesindia@gmail.com>
+// Copyright (c) 2026 Tejus Adiga M. All rights reserved.
+
 import PackageDescription
 
 let package = Package(

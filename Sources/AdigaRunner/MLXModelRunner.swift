@@ -1,3 +1,6 @@
+// Author: Tejus Adiga M <entropypagesindia@gmail.com>
+// Copyright (c) 2026 Tejus Adiga M. All rights reserved.
+
 import Foundation
 
 protocol LLMRunner {
