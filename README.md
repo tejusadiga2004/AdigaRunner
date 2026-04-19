@@ -91,18 +91,37 @@ swift run adiga serve llama-3.2-1b \
 
 ## Supported Models
 
-The built-in catalog currently includes:
+The built-in catalog includes 14 models covering lightweight, general-purpose, and specialized use cases:
 
+**Lightweight (≤2B):**
+- `tinyllama-1.1b` - Extremely lightweight 1.1B model
+- `gemma-2b` - Google ultra-lightweight 2B model
+- `qwen2.5-1.5b` - Compact multilingual instruction model
+
+**Balanced (2-3B):**
 - `llama-3.2-1b` - Small general-purpose instruction model
 - `llama-3.2-3b` - Balanced quality and local performance
-- `qwen2.5-1.5b` - Compact multilingual instruction model
 - `phi-3.5-mini` - Small reasoning-focused instruction model
+- `orca-mini-3b` - 3B reasoning-focused model
+- `stablelm-3b` - Stability AI's small 3B model
+
+**Specialist (1-3B):**
+- `deepseek-coder-1.3b` - Code generation specialist
+
+**High-Performance (7B):**
+- `mistral-7b` - 7B general-purpose instruction model
+- `neural-chat-7b` - Intel neural-chat optimized 7B model
+- `zephyr-7b` - High-quality instruction-tuned Mistral variant
+- `starling-lm-7b` - High-quality reasoning model
+- `nous-hermes-2-7b` - Strong reasoning and instruction-following
 
 List all supported models:
 
 ```bash
 swift run adiga list-models
 ```
+
+This displays a formatted table with model names, descriptions, repository IDs, and local storage paths.
 
 List only supported models already present on disk:
 
@@ -243,12 +262,38 @@ Events:
 
 Current behavior: the implementation first generates the full output, then splits it on spaces and returns those chunks as SSE token events. It is not true token-by-token live decoding from the model process.
 
+## Testing
+
+The project includes a comprehensive test suite with 19 tests covering:
+
+- CLI command parsing and validation
+- Model catalog lookup and formatting
+- HTTP endpoint behavior (health, ready, generate, streaming)
+- Request validation and error handling
+
+Run tests:
+
+```bash
+swift test
+```
+
+Tests are automatically executed in CI/CD pipelines on pull requests and pushes.
+
 ## Runtime Notes
 
 - Startup validates that the model path exists and is readable.
 - Startup also checks that `python3` can import `mlx_lm`.
 - The model is warmed with a one-token generation before the server reports ready.
 - Request handling is serialized with a lock inside `ModelService`.
+
+## CI/CD
+
+GitHub Actions workflow runs on every push and pull request:
+- Executes the full test suite
+- Builds the release binary
+- Creates release artifacts for tagged commits
+
+See `.github/workflows/swift.yml` for details.
 
 ## Errors
 

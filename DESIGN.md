@@ -9,6 +9,7 @@ The current implementation uses:
 1. Swift for CLI parsing, model catalog handling, HTTP serving, local download management, progress reporting, and resumable downloads.
 2. Native Swift HTTP APIs for model downloads from Hugging Face.
 3. Python `mlx_lm` only for inference execution inside the current `MLXModelRunner` implementation.
+4. XCTest framework for comprehensive unit and integration testing (19 tests across config parsing, HTTP routes, model management, and validation).
 
 ## High Level Requirements
 
@@ -30,13 +31,15 @@ The current implementation uses:
 
 ### Non-Functional Requirements
 
-1. The application must run locally on macOS 13 or later.
+1. The application must run locally on macOS 15 or later.
 2. The HTTP server must bind to a local host address by default.
 3. Startup configuration must be validated early with clear CLI errors.
 4. The design must keep the user-facing HTTP API stable even if the inference backend changes later.
 5. The implementation should prefer simple operational behavior over maximum concurrency in the first version.
 6. The downloader should tolerate interruptions and avoid restarting large model files unnecessarily.
 7. The service should return deterministic error messages for invalid CLI usage, invalid HTTP requests, and runtime failures.
+8. The codebase should be testable with mocked dependencies and support both unit and integration tests.
+9. Test coverage should include critical paths: CLI parsing, model resolution, HTTP routes, and request validation.
 
 ## How People Will Use This App
 
@@ -54,7 +57,7 @@ The current implementation uses:
 swift run adiga list-models
 ```
 
-This prints the hard-coded supported model names, descriptions, source repositories, and resolved local storage paths.
+This prints the hard-coded supported model names (14 total), descriptions, source repositories, and resolved local storage paths in a formatted, easy-to-read table with entry numbers.
 
 #### Flow 2: Download a supported model
 
@@ -144,10 +147,11 @@ The application follows a layered local-service architecture with separate respo
    - Parse CLI arguments.
    - Validate flags and supported model names.
    - Resolve supported model names to local storage paths.
+   - Testable via unit tests for all parsing paths.
 
 3. `SupportedModelCatalog`
-   - Defines the hard-coded supported models.
-   - Provides lookup and formatted listing.
+   - Defines the hard-coded supported models (14 total).
+   - Provides lookup and formatted listing with visual separators and numbering.
 
 4. `ModelStorage`
    - Defines the default local storage root.
@@ -162,13 +166,21 @@ The application follows a layered local-service architecture with separate respo
 6. `HTTPServer`
    - Creates the Vapor application.
    - Registers health, readiness, generation, and streaming routes.
+   - Accepts `any LLMRunner` protocol for testability.
 
 7. `ModelService`
    - Validates generation requests.
    - Applies default parameters.
    - Serializes inference execution.
+   - Testable via mock runner implementation.
 
-8. `MLXModelRunner`
+8. `LLMRunner` (Protocol)
+   - Interface for inference backends.
+   - Implemented by `MLXModelRunner` for production.
+   - Implemented by `MockLLMRunner` for testing.
+   - Enables dependency injection in tests.
+
+9. `MLXModelRunner`
    - Validates the inference runtime.
    - Loads and warms the local model.
    - Executes `python3 -m mlx_lm.generate`.
