@@ -4,9 +4,24 @@
 import Foundation
 import Vapor
 
-func makeServer(config: AppConfig, modelRunner: MLXModelRunner) async throws -> Application {
+private actor LoggingBootstrapState {
+    static let shared = LoggingBootstrapState()
+
+    private var hasBootstrapped = false
+
+    func bootstrapIfNeeded(environment: inout Environment) throws {
+        guard !hasBootstrapped else {
+            return
+        }
+
+        try LoggingSystem.bootstrap(from: &environment)
+        hasBootstrapped = true
+    }
+}
+
+func makeServer(config: AppConfig, modelRunner: any LLMRunner) async throws -> Application {
     var env = Environment(name: "adiga", arguments: ["vapor"])
-    try LoggingSystem.bootstrap(from: &env)
+    try await bootstrapLoggingIfNeeded(environment: &env)
 
     let app = try await Application.make(env)
     app.http.server.configuration.hostname = config.host
@@ -44,9 +59,8 @@ func makeServer(config: AppConfig, modelRunner: MLXModelRunner) async throws -> 
         let output = try modelService.generate(from: request)
 
         let tokens = output.split(separator: " ")
-        var lines: [String] = tokens.map { "event: token\\ndata: \($0)\\n" }
-        lines.append("event: done\\ndata: [DONE]\\n")
-        let payload = lines.joined(separator: "\\n") + "\\n"
+        let payload = tokens.map { "event: token\ndata: \($0)\n\n" }.joined()
+            + "event: done\ndata: [DONE]\n\n"
 
         let headers = HTTPHeaders([
             ("Content-Type", "text/event-stream"),
@@ -59,4 +73,8 @@ func makeServer(config: AppConfig, modelRunner: MLXModelRunner) async throws -> 
 
     app.middleware.use(ErrorMiddleware.default(environment: app.environment))
     return app
+}
+
+private func bootstrapLoggingIfNeeded(environment: inout Environment) async throws {
+    try await LoggingBootstrapState.shared.bootstrapIfNeeded(environment: &environment)
 }

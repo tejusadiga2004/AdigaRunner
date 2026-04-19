@@ -5,12 +5,12 @@ import Foundation
 import Vapor
 
 final class ModelService: @unchecked Sendable {
-    private let runner: MLXModelRunner
+    private let runner: any LLMRunner
     private let defaultMaxTokens: Int
     private let defaultTemperature: Double
     private let lock = NSLock()
 
-    init(runner: MLXModelRunner, defaultMaxTokens: Int, defaultTemperature: Double) {
+    init(runner: any LLMRunner, defaultMaxTokens: Int, defaultTemperature: Double) {
         self.runner = runner
         self.defaultMaxTokens = defaultMaxTokens
         self.defaultTemperature = defaultTemperature

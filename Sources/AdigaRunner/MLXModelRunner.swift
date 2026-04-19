@@ -3,10 +3,12 @@
 
 import Foundation
 
-protocol LLMRunner {
+protocol LLMRunner: AnyObject {
     func validateEnvironment() throws
     func loadModel() throws
     func generate(prompt: String, maxTokens: Int, temperature: Double) throws -> String
+    var ready: Bool { get }
+    var selectedModelPath: String { get }
 }
 
 final class MLXModelRunner: LLMRunner {

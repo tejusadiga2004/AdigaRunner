@@ -23,5 +23,12 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor")
             ]
         ),
+        .testTarget(
+            name: "AdigaRunnerTests",
+            dependencies: [
+                "AdigaRunner",
+                .product(name: "XCTVapor", package: "vapor")
+            ]
+        )
     ]
 )

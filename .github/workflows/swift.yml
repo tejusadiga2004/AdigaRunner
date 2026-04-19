@@ -26,12 +26,14 @@ jobs:
         xcode-version: '16.4'
     - name: Show Swift version
       run: swift --version
+    - name: Run tests
+      run: swift test
     - name: Build
       run: ./scripts/build_binary.sh
     - name: Upload dist artifact
       uses: actions/upload-artifact@v4
       with:
-        name: dist
+        name: Adiga
         path: dist/
         if-no-files-found: error
 
@@ -44,7 +46,7 @@ jobs:
     - name: Download dist artifact
       uses: actions/download-artifact@v4
       with:
-        name: dist
+        name: Adiga
         path: dist/
     - name: Publish GitHub release
       uses: softprops/action-gh-release@v2
